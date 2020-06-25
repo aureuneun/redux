@@ -1,27 +1,33 @@
+const { createStore } = require("redux");
+
 const plus = document.getElementById("plus");
 const number = document.getElementById("number");
 const minus = document.getElementById("minus");
 
-let count = 0;
+const INCREMENT = "INCREMENT";
+const DECREMENT = "DECREMENT";
 
-const updateText = () => {
-  number.innerHTML = count;
+const reducer = (count = 0, action) => {
+  switch (action.type) {
+    case INCREMENT:
+      return count + 1;
+    case DECREMENT:
+      return count - 1;
+    default:
+      return count;
+  }
 };
 
-const onPlus = (e) => {
-  count = count + 1;
-  updateText();
-};
+const store = createStore(reducer);
 
-const onMinus = (e) => {
-  count = count - 1;
-  updateText();
-};
+const onChange = () => (number.innerHTML = store.getState());
+const onIncrement = () => store.dispatch({ type: INCREMENT });
+const onDecrement = () => store.dispatch({ type: DECREMENT });
 
 const init = () => {
-  updateText();
-  plus.addEventListener("click", onPlus);
-  minus.addEventListener("click", onMinus);
+  store.subscribe(onChange);
+  plus.addEventListener("click", onIncrement);
+  minus.addEventListener("click", onDecrement);
 };
 
 init();
